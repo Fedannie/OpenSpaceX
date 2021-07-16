@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class OpenSpaseXApplication {
+public class OpenSpaceXApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(OpenSpaseXApplication.class, args);
+		SpringApplication.run(OpenSpaceXApplication.class, args);
 	}
 }
