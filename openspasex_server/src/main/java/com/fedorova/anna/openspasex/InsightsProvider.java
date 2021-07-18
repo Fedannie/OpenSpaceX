@@ -1,6 +1,8 @@
 package com.fedorova.anna.openspasex;
 
+import com.fedorova.anna.openspasex.model.Launch;
 import com.fedorova.anna.openspasex.model.Rocket;
+import com.fedorova.anna.openspasex.query.QueryBuilder;
 import com.google.gson.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -10,10 +12,19 @@ import java.util.stream.Stream;
 
 public class InsightsProvider extends RestTemplate {
     private final static String URL = "https://api.spacexdata.com/v4";
-    private final static String DATE_SUFFIX = "-01-01T00:00:00.000Z";
 
-    private final Gson gson = new Gson();
-    private final JsonParser parser = new JsonParser();
+    public Launch getNextLaunch() {
+        JsonObject query = new QueryBuilder()
+                .addFromDate(LocalDate.now())
+                .addLimit(1)
+                .addSortBy("date_unix")
+                .addPagination(true)
+                .addPopulate("rocket")
+                .build();
+        Query body = postForObject(URL + "/launches/query", query, Query.class);
+        if (body == null) return null;
+        return Launch.decode(body.docs[0]);
+    }
 
     public double getSuccessRate(Integer year) {
         JsonObject[] response = getAllLaunches(year);
@@ -27,18 +38,11 @@ public class InsightsProvider extends RestTemplate {
     }
 
     public Rocket[] getAllRockets() {
-        JsonObject[] response = getForEntity(URL + "/rockets", JsonObject[].class).getBody();
+        JsonObject[] response = getForObject(URL + "/rockets", JsonObject[].class);
         if (response == null) return null;
         return Arrays
                 .stream(response)
-                .map(rocketJson -> {
-                    Rocket rocket = gson.fromJson(rocketJson, Rocket.class);
-                    JsonElement flickrImages = rocketJson.get("flickr_images");
-                    if (flickrImages != null && flickrImages.getAsJsonArray().size() > 0) {
-                        rocket.setImage(flickrImages.getAsJsonArray().get(0).getAsString());
-                    }
-                    return rocket;
-                })
+                .map(Rocket::decode)
                 .toArray(Rocket[]::new);
     }
 
@@ -59,48 +63,24 @@ public class InsightsProvider extends RestTemplate {
     }
 
     private JsonObject[] getAllLaunches(Integer year) {
-        if (year == null) return getForEntity(URL + "/launches/past", JsonObject[].class).getBody();
+        if (year == null) return getForObject(URL + "/launches/past", JsonObject[].class);
 
-        Query body = postForEntity(URL + "/launches/query", getQuery(year), Query.class).getBody();
+        QueryBuilder queryBuilder = new QueryBuilder();
+
+        LocalDateTime localDate = LocalDateTime.now();
+        if (localDate.getYear() <= year) {
+            queryBuilder.addToDate(localDate);
+        } else {
+            queryBuilder.addToDate(year + 1);
+        }
+        JsonObject query = queryBuilder
+                .addFromDate(year)
+                .addPagination(false)
+                .build();
+
+        Query body = postForObject(URL + "/launches/query", query, Query.class);
         if (body == null) return null;
         return body.docs;
-    }
-
-    private JsonObject getQuery(String populate) {
-        return getQuery(null, populate);
-    }
-
-    private JsonObject getQuery(Integer year) {
-        return getQuery(year, "");
-    }
-
-    private JsonObject getQuery(Integer year, String populate) {
-        String query = "{";
-
-        if (year != null) {
-            LocalDate localDate = LocalDate.now();
-
-            String secondDate;
-            if (localDate.getYear() <= year) {
-                secondDate = localDate.toString();
-            } else {
-                secondDate = (year + 1) + DATE_SUFFIX;
-            }
-            query += "   \"query\": {\n" +
-                    "      \"date_utc\": {\n" +
-                    "           \"$gte\": \"" + year + DATE_SUFFIX + "\",\n" +
-                    "           \"$lte\": \"" + secondDate + "\"\n" +
-                    "       }\n" +
-                    "   },\n";
-        }
-        query += "   \"options\": {\n" +
-                "       \"pagination\": false,\n" +
-                "       \"populate\": [\n" +
-                "           \"" + populate + "\"\n" +
-                "       ]\n" +
-                "    }\n" +
-                "}";
-        return parser.parse(query).getAsJsonObject();
     }
 
     private static class Query {

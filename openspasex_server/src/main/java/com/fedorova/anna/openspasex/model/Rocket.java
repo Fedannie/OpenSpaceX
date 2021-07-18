@@ -1,5 +1,8 @@
 package com.fedorova.anna.openspasex.model;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
 public class Rocket {
@@ -20,5 +23,15 @@ public class Rocket {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public static Rocket decode(JsonObject jsonObject) {
+        if (jsonObject == null) return null;
+        Rocket rocket = new Gson().fromJson(jsonObject, Rocket.class);
+        JsonElement flickrImages = jsonObject.get("flickr_images");
+        if (flickrImages != null && flickrImages.getAsJsonArray().size() > 0) {
+            rocket.setImage(flickrImages.getAsJsonArray().get(0).getAsString());
+        }
+        return rocket;
     }
 }
