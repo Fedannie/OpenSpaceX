@@ -74,6 +74,11 @@ public class InsightsProvider extends RestTemplate {
                 .toArray(Rocket[]::new);
     }
 
+    public int getLaunchesCnt(Integer year) {
+        JsonObject[] response = getAllLaunches(year);
+        return (response == null) ? 0 : response.length;
+    }
+
     public long getCost(Integer year) {
         JsonObject[] response = getAllLaunches(year, "rocket");
         if (response == null) return 0;

@@ -16,6 +16,11 @@ public class InsightsController {
         return provider.getNextLaunch();
     }
 
+    @RequestMapping(method = RequestMethod.GET, path = "/launches_count")
+    public int getLaunchesCnt(@RequestParam(value = "year", required = false) Integer year) {
+        return provider.getLaunchesCnt(year);
+    }
+
     @RequestMapping(method = RequestMethod.GET, path = "/rockets")
     public Rocket[] getRockets() {
         return provider.getAllRockets();
