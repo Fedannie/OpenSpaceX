@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>OpenSpaceX web page</title>
+    <link rel="stylesheet" href="openspacex_web.css">
     <script type="text/javascript" src="openspacex_web.js"></script>
-
 </head>
 <body onload=onPageLoad()>
     <h1>This page presents some statistics about the past SpaceX flights.</h1>
 
-    <label for="year_select">Feel free to choose the year:</label><select id="year_select" name="Year" onchange=reload()></select>
+    <label for="year_select">Show statistics for:</label><select id="year_select" name="Year" onchange=reload()></select>
 
     <p id="launch_cnt">A</p>
     <p id="success_rate">B</p>
