@@ -46,6 +46,21 @@ public class InsightsProvider extends RestTemplate {
                 .toArray(Rocket[]::new);
     }
 
+    public long getCost(Integer year) {
+        JsonObject[] response = getAllLaunches(year, "rocket");
+        if (response == null) return 0;
+
+        return Arrays
+                .stream(response)
+                .map(launch -> {
+                    JsonObject rocket = launch.getAsJsonObject("rocket");
+                    if (rocket == null) return 0L;
+                    JsonPrimitive cost = rocket.getAsJsonPrimitive("cost_per_launch");
+                    return cost == null ? 0L : cost.getAsLong();
+                })
+                .reduce(0L, Long::sum);
+    }
+
     public long getCrewSize(Integer year) {
         JsonObject[] response = getAllLaunches(year);
         if (response == null) return 0;
@@ -63,19 +78,29 @@ public class InsightsProvider extends RestTemplate {
     }
 
     private JsonObject[] getAllLaunches(Integer year) {
-        if (year == null) return getForObject(URL + "/launches/past", JsonObject[].class);
+        return getAllLaunches(year, "");
+    }
+
+    private JsonObject[] getAllLaunches(Integer year, String populate) {
+        if (year == null && (populate == null || populate.isEmpty())) {
+            return getForObject(URL + "/launches/past", JsonObject[].class);
+        }
 
         QueryBuilder queryBuilder = new QueryBuilder();
 
-        LocalDateTime localDate = LocalDateTime.now();
-        if (localDate.getYear() <= year) {
-            queryBuilder.addToDate(localDate);
-        } else {
-            queryBuilder.addToDate(year + 1);
+        if (year != null) {
+            LocalDateTime localDate = LocalDateTime.now();
+            if (localDate.getYear() <= year) {
+                queryBuilder.addToDate(localDate);
+            } else {
+                queryBuilder.addToDate(year + 1);
+            }
+            queryBuilder.addFromDate(year);
         }
+
         JsonObject query = queryBuilder
-                .addFromDate(year)
                 .addPagination(false)
+                .addPopulate(populate)
                 .build();
 
         Query body = postForObject(URL + "/launches/query", query, Query.class);
