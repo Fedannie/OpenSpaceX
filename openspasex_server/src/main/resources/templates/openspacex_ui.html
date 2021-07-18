@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OpenSpaceX web page</title>
+    <script type="text/javascript" src="openspacex_web.js"></script>
+
+</head>
+<body onload=onPageLoad()>
+    <h1>This page presents some statistics about the past SpaceX flights.</h1>
+
+    <label for="year_select">Feel free to choose the year:</label><select id="year_select" name="Year" onchange=reload()></select>
+
+    <p id="launch_cnt">A</p>
+    <p id="success_rate">B</p>
+    <p id="cost">C</p>
+    <p id="crew_size">D</p>
+    <p id="weight">E</p>
+
+</body>
+</html>
