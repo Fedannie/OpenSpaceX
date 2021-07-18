@@ -101,7 +101,9 @@ public class InsightsProvider {
                 .stream(response)
                 .map(launch -> {
                     ArrayList<String> ids = new ArrayList<>();
-                    launch.getAsJsonArray("crew").forEach(id -> ids.add(id.getAsString()));
+                     try {
+                         launch.getAsJsonArray("crew").forEach(id -> ids.add(id.getAsString()));
+                     } catch (ClassCastException exception) {} //todo remove after spacex api fix
                     return ids.toArray();
                 })
                 .flatMap(Stream::of)

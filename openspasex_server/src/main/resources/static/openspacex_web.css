@@ -2,3 +2,37 @@ select {
     margin-left: 10px;
     padding: 5px;
 }
+
+#fact_list {
+    margin-left: 25px;
+}
+
+#statistics {
+    position: relative;
+    margin: 25px 25px;
+}
+
+#loader {
+    position: absolute;
+    z-index: 1;
+    top: 150px;
+    left: 150px;
+    width: 120px;
+    height: 120px;
+    margin: -76px 0 0 -76px;
+    border: 20px solid #e3e3e3;
+    border-radius: 50%;
+    border-top: 20px solid #3699df;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

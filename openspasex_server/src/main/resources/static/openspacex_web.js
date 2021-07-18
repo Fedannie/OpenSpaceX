@@ -18,44 +18,56 @@ function getRequest(url, callback, params) {
     httpRequest.send( null );
 }
 
+let currentYear = new Date().getFullYear()
+var remainsToLoad = 0;
+
 function getYearParam(year) {
     if (year == null) return null;
     return {"year" : year};
 }
 
 function getNumberOfLaunches(year) {
+    remainsToLoad++;
     getRequest("http://localhost:8080/launches_count", response => {
         document.getElementById("launch_cnt").innerText = "There were " + response + " flights in total.";
+        onLoaded();
     }, getYearParam(year))
 }
 
 function getSuccessRate(year = null) {
+    remainsToLoad++;
     getRequest("http://localhost:8080/success_rate", response => {
         document.getElementById("success_rate").innerText = "The success rate was " + (Number(response) * 100).toFixed(2) + "%.";
+        onLoaded();
     }, getYearParam(year))
 }
 
 function getCost(year = null) {
+    remainsToLoad++;
     getRequest("http://localhost:8080/cost", response => {
         document.getElementById("cost").innerText = "All these launches cost " + currencyFormatter.format(response) + ".";
+        onLoaded();
     }, getYearParam(year))
 }
 
 function getCrewSize(year = null) {
+    remainsToLoad++;
     getRequest("http://localhost:8080/crew", response => {
         document.getElementById("crew_size").innerText = " The total number of " + response + " astronauts participated in these flights.";
+        onLoaded();
     }, getYearParam(year))
 }
 
 function getTakeoffWeight(year = null) {
+    remainsToLoad++;
     getRequest("http://localhost:8080/mass", response => {
         document.getElementById("weight").innerText = "The total load of the spaceships was " + numberFormat.format(response) + " kg.";
+        onLoaded();
     }, getYearParam(year))
 }
 
-let currentYear = new Date().getFullYear()
-
 function reload() {
+    toggleLoading(true);
     let select = document.getElementById("year_select");
     let year = null;
     if (select.options.length > 0) {
@@ -68,6 +80,17 @@ function reload() {
     getCost(year);
     getCrewSize(year);
     getTakeoffWeight(year);
+}
+
+function onLoaded() {
+    remainsToLoad--;
+    if (remainsToLoad > 0) return;
+    toggleLoading(false);
+}
+
+function toggleLoading(on) {
+    document.getElementById("loader").style.display = on ? "block" : "none";
+    document.getElementById("fact_list").style.display = on ? "none" : "block";
 }
 
 function onPageLoad() {

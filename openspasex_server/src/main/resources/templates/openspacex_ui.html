@@ -9,13 +9,20 @@
 <body onload=onPageLoad()>
     <h1>This page presents some statistics about the past SpaceX flights.</h1>
 
-    <label for="year_select">Show statistics for:</label><select id="year_select" name="Year" onchange=reload()></select>
 
-    <p id="launch_cnt">A</p>
-    <p id="success_rate">B</p>
-    <p id="cost">C</p>
-    <p id="crew_size">D</p>
-    <p id="weight">E</p>
+    <div id="statistics">
+        <label for="year_select">Show statistics for:</label><select id="year_select" name="Year" onchange=reload()></select>
+
+        <div id="loader"></div>
+
+        <div id="fact_list">
+            <p id="launch_cnt"></p>
+            <p id="success_rate"></p>
+            <p id="cost"></p>
+            <p id="crew_size"></p>
+            <p id="weight"></p>
+        </div>
+    </div>
 
 </body>
 </html>
