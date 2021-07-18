@@ -15,6 +15,17 @@ public class InsightsProvider extends RestTemplate {
     private final Gson gson = new Gson();
     private final JsonParser parser = new JsonParser();
 
+    public double getSuccessRate(Integer year) {
+        JsonObject[] response = getAllLaunches(year);
+        if (response == null) return 0;
+
+        return Arrays
+                .stream(response)
+                .mapToInt(launch -> launch.get("success").getAsBoolean() ? 1 : 0)
+                .average()
+                .orElse(0);
+    }
+
     public Rocket[] getAllRockets() {
         JsonObject[] response = getForEntity(URL + "/rockets", JsonObject[].class).getBody();
         if (response == null) return null;
@@ -32,18 +43,9 @@ public class InsightsProvider extends RestTemplate {
     }
 
     public long getCrewSize(Integer year) {
-        JsonObject[] response;
-
-        if (year != null) {
-            Query body = postForEntity(URL + "/launches/query", getQuery(year), Query.class).getBody();
-
-            if (body == null) return 0;
-            response = body.docs;
-        } else {
-            response = getForEntity(URL + "/launches/past", JsonObject[].class).getBody();
-        }
-
+        JsonObject[] response = getAllLaunches(year);
         if (response == null) return 0;
+
         return Arrays
                 .stream(response)
                 .map(launch -> {
@@ -54,6 +56,14 @@ public class InsightsProvider extends RestTemplate {
                 .flatMap(Stream::of)
                 .distinct()
                 .count();
+    }
+
+    private JsonObject[] getAllLaunches(Integer year) {
+        if (year == null) return getForEntity(URL + "/launches/past", JsonObject[].class).getBody();
+
+        Query body = postForEntity(URL + "/launches/query", getQuery(year), Query.class).getBody();
+        if (body == null) return null;
+        return body.docs;
     }
 
     private JsonObject getQuery(String populate) {

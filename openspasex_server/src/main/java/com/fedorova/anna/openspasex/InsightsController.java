@@ -15,6 +15,11 @@ public class InsightsController {
         return provider.getAllRockets();
     }
 
+    @RequestMapping(method = RequestMethod.GET, path = "success_rate")
+    public double getSuccessRate(@RequestParam(value = "year", required = false) Integer year) {
+        return provider.getSuccessRate(year);
+    }
+
     @RequestMapping(method = RequestMethod.GET, path = "/crew")
     public long getCrewSize(@RequestParam(value = "year", required = false) Integer year) {
         return provider.getCrewSize(year);
