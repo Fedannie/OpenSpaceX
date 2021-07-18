@@ -31,6 +31,10 @@ public class InsightsController {
         return provider.getCost(year);
     }
 
+    @RequestMapping(method = RequestMethod.GET, path = "/mass")
+    public long getLaunchedMass(@RequestParam(value = "year", required = false) Integer year) {
+        return provider.getLaunchedMass(year);
+    }
 
     @RequestMapping(method = RequestMethod.GET, path = "/crew")
     public long getCrewSize(@RequestParam(value = "year", required = false) Integer year) {

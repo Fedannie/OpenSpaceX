@@ -1,5 +1,6 @@
 package com.fedorova.anna.openspasex.model;
 
+import com.fedorova.anna.openspasex.utils.JsonUtils;
 import com.google.gson.*;
 
 public class Launch {
@@ -49,15 +50,9 @@ public class Launch {
         Launch launch = new Gson().fromJson(jsonObject, Launch.class);
         launch.setRocket(Rocket.decode(jsonObject.getAsJsonObject("rocket")));
 
-        JsonObject links = jsonObject.getAsJsonObject("links");
-        if (links != null) {
-            JsonObject patch = links.getAsJsonObject("patch");
-            if (patch != null) {
-                JsonPrimitive image = patch.getAsJsonPrimitive("large");
-                if (image != null) {
-                    launch.setLogo(image.getAsString());
-                }
-            }
+        JsonPrimitive image = JsonUtils.getNestedPrimitive(jsonObject, "links", "patch", "large");
+        if (image != null) {
+            launch.setLogo(image.getAsString());
         }
 
         JsonArray crew = jsonObject.getAsJsonArray("crew");

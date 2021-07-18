@@ -3,6 +3,7 @@ package com.fedorova.anna.openspasex;
 import com.fedorova.anna.openspasex.model.Launch;
 import com.fedorova.anna.openspasex.model.Rocket;
 import com.fedorova.anna.openspasex.query.QueryBuilder;
+import com.fedorova.anna.openspasex.utils.JsonUtils;
 import com.google.gson.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -19,11 +20,38 @@ public class InsightsProvider extends RestTemplate {
                 .addLimit(1)
                 .addSortBy("date_unix")
                 .addPagination(true)
-                .addPopulate("rocket")
+                .addPopulates("rocket")
                 .build();
         Query body = postForObject(URL + "/launches/query", query, Query.class);
         if (body == null) return null;
         return Launch.decode(body.docs[0]);
+    }
+
+    public long getLaunchedMass(Integer year) {
+        JsonObject[] response = getAllLaunches(year, "rocket", "payloads");
+        if (response == null) return 0;
+        return Arrays
+                .stream(response)
+                .mapToLong(launch -> {
+                    long takeOffMass = 0;
+
+                    JsonPrimitive rocketMass = JsonUtils.getNestedPrimitive(launch, "rocket", "mass", "kg");
+                    if (rocketMass != null) takeOffMass += rocketMass.getAsLong();
+                    JsonPrimitive firstStageFuel = JsonUtils.getNestedPrimitive(launch, "rocket", "first_stage", "fuel_amount_tons");
+                    if (firstStageFuel != null) takeOffMass += firstStageFuel.getAsLong();
+                    JsonPrimitive secondStageFuel = JsonUtils.getNestedPrimitive(launch, "rocket", "second_stage", "fuel_amount_tons");
+                    if (secondStageFuel != null) takeOffMass += secondStageFuel.getAsLong();
+
+                    JsonArray payloads = launch.getAsJsonArray("payloads");
+                    if (payloads != null) {
+                        for (int i = 0; i < payloads.size(); i++) {
+                            JsonElement massJson = payloads.get(i).getAsJsonObject().get("mass_kg");
+                            if (massJson != null && !massJson.isJsonNull()) takeOffMass += massJson.getAsLong();
+                        }
+                    }
+                    return takeOffMass;
+                })
+                .sum();
     }
 
     public double getSuccessRate(Integer year) {
@@ -53,9 +81,7 @@ public class InsightsProvider extends RestTemplate {
         return Arrays
                 .stream(response)
                 .map(launch -> {
-                    JsonObject rocket = launch.getAsJsonObject("rocket");
-                    if (rocket == null) return 0L;
-                    JsonPrimitive cost = rocket.getAsJsonPrimitive("cost_per_launch");
+                    JsonPrimitive cost = JsonUtils.getNestedPrimitive(launch, "rocket", "cost_per_launch");
                     return cost == null ? 0L : cost.getAsLong();
                 })
                 .reduce(0L, Long::sum);
@@ -77,12 +103,8 @@ public class InsightsProvider extends RestTemplate {
                 .count();
     }
 
-    private JsonObject[] getAllLaunches(Integer year) {
-        return getAllLaunches(year, "");
-    }
-
-    private JsonObject[] getAllLaunches(Integer year, String populate) {
-        if (year == null && (populate == null || populate.isEmpty())) {
+    private JsonObject[] getAllLaunches(Integer year, String... populates) {
+        if (year == null && populates.length == 0) {
             return getForObject(URL + "/launches/past", JsonObject[].class);
         }
 
@@ -100,7 +122,7 @@ public class InsightsProvider extends RestTemplate {
 
         JsonObject query = queryBuilder
                 .addPagination(false)
-                .addPopulate(populate)
+                .addPopulates(populates)
                 .build();
 
         Query body = postForObject(URL + "/launches/query", query, Query.class);

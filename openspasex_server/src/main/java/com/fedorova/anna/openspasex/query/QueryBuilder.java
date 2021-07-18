@@ -7,6 +7,7 @@ import com.google.gson.JsonPrimitive;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
 public class QueryBuilder {
     private final static String DATE_SUFFIX = "-01-01T00:00:00.000Z";
@@ -15,7 +16,7 @@ public class QueryBuilder {
     private String toDate;
     private int limit = -1;
     private String sortBy;
-    private String populate;
+    private String[] populates;
     private boolean pagination = true;
 
     public QueryBuilder addFromDate(LocalDate date) {
@@ -48,8 +49,8 @@ public class QueryBuilder {
         return this;
     }
 
-    public QueryBuilder addPopulate(String populate) {
-        this.populate = populate;
+    public QueryBuilder addPopulates(String... populates) {
+        this.populates = populates;
         return this;
     }
 
@@ -75,9 +76,9 @@ public class QueryBuilder {
         JsonObject options = new JsonObject();
         options.addProperty("pagination", pagination);
 
-        if (populate != null && !populate.isEmpty()) {
+        if (populates != null && populates.length > 0) {
             JsonArray populateArray = new JsonArray();
-            populateArray.add(new JsonPrimitive(populate));
+            Arrays.stream(populates).forEach(populate -> populateArray.add(new JsonPrimitive(populate)));
             options.add("populate", populateArray);
         }
 
