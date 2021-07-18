@@ -11,8 +11,9 @@ import java.time.*;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class InsightsProvider extends RestTemplate {
+public class InsightsProvider {
     private final static String URL = "https://api.spacexdata.com/v4";
+    private final RestTemplate restTemplate = new RestTemplate();
 
     public Launch getNextLaunch() {
         JsonObject query = new QueryBuilder()
@@ -22,7 +23,7 @@ public class InsightsProvider extends RestTemplate {
                 .addPagination(true)
                 .addPopulates("rocket")
                 .build();
-        Query body = postForObject(URL + "/launches/query", query, Query.class);
+        Query body = restTemplate.postForObject(URL + "/launches/query", query, Query.class);
         if (body == null) return null;
         return Launch.decode(body.docs[0]);
     }
@@ -66,7 +67,7 @@ public class InsightsProvider extends RestTemplate {
     }
 
     public Rocket[] getAllRockets() {
-        JsonObject[] response = getForObject(URL + "/rockets", JsonObject[].class);
+        JsonObject[] response = restTemplate.getForObject(URL + "/rockets", JsonObject[].class);
         if (response == null) return null;
         return Arrays
                 .stream(response)
@@ -110,7 +111,7 @@ public class InsightsProvider extends RestTemplate {
 
     private JsonObject[] getAllLaunches(Integer year, String... populates) {
         if (year == null && populates.length == 0) {
-            return getForObject(URL + "/launches/past", JsonObject[].class);
+            return restTemplate.getForObject(URL + "/launches/past", JsonObject[].class);
         }
 
         QueryBuilder queryBuilder = new QueryBuilder();
@@ -130,7 +131,7 @@ public class InsightsProvider extends RestTemplate {
                 .addPopulates(populates)
                 .build();
 
-        Query body = postForObject(URL + "/launches/query", query, Query.class);
+        Query body = restTemplate.postForObject(URL + "/launches/query", query, Query.class);
         if (body == null) return null;
         return body.docs;
     }
