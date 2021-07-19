@@ -5,11 +5,24 @@ select {
 
 #fact_list {
     margin-left: 25px;
+    display: none;
 }
 
 #statistics {
     position: relative;
-    margin: 25px 25px;
+    left: 50px;
+    max-width: 40%;
+    display: inline-block;
+    padding: 25px;
+    border-radius: 25px;
+}
+
+.image {
+    margin-left: 2%;
+    float: left;
+    height: 100px;
+    width: 100px;
+    display: inline-block
 }
 
 #loader {
@@ -35,4 +48,34 @@ select {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+hr.solid {
+    border-top: 3px solid #bbb;
+}
+
+#rockets {
+    max-width: 90%;
+    left: 50px;
+    padding: 25px;
+    display: none;
+}
+
+#next_launch {
+    max-width: 50%;
+    position: absolute;
+    left: 50%;
+    border-radius: 25px;
+    padding: 25px;
+    display: none;
+}
+
+.description {
+    margin-left: 20px;
+    display: inline-block;
+}
+
+.spacex_logo {
+    margin-left: 25px;
+    height: 60px;
 }

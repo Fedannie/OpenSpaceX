@@ -7,22 +7,43 @@
     <script type="text/javascript" src="openspacex_web.js"></script>
 </head>
 <body onload=onPageLoad()>
-    <h1>This page presents some statistics about the past SpaceX flights.</h1>
+    <h1>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/SpaceX-Logo.svg/2560px-SpaceX-Logo.svg.png" class="spacex_logo"/>
+        Open SpaceX: information insights
+    </h1>
+
+    <div style="display: block;">
+
+        <div id="statistics">
+            <label for="year_select">Show statistics for:</label><select id="year_select" name="Year" onchange=reload()></select>
+
+            <div id="loader"></div>
+
+            <div id="fact_list">
+                <p id="launch_cnt"></p>
+                <p id="success_rate"></p>
+                <p id="cost"></p>
+                <p id="crew_size"></p>
+                <p id="weight"></p>
+            </div>
+        </div>
 
 
-    <div id="statistics">
-        <label for="year_select">Show statistics for:</label><select id="year_select" name="Year" onchange=reload()></select>
+        <div id="next_launch">
+            <p>Information about the next launch:</p>
 
-        <div id="loader"></div>
+            <img id="launch_logo">
 
-        <div id="fact_list">
-            <p id="launch_cnt"></p>
-            <p id="success_rate"></p>
-            <p id="cost"></p>
-            <p id="crew_size"></p>
-            <p id="weight"></p>
+            <div class="description">
+                <p id="name"></p>
+                <p id="date"></p>
+                <p id="rocket"></p>
+            </div>
         </div>
     </div>
 
+<!--    <table id="rockets">
+        <thead>SpaceX Rockets</thead>
+    </table>-->
 </body>
 </html>

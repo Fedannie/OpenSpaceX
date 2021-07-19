@@ -1,14 +1,18 @@
 package com.fedorova.anna.openspasex.model;
 
 import com.fedorova.anna.openspasex.utils.JsonUtils;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.annotations.SerializedName;
 
 public class Launch {
     private final String id;
     private final String name;
     private Rocket rocket;
+    @SerializedName(value = "date_utc")
     private final String date;
-    private final boolean success;
     private String logo;
     private final String description;
     private int crewCnt;
@@ -18,7 +22,6 @@ public class Launch {
             String name,
             Rocket rocket,
             String date,
-            boolean success,
             String logo,
             String description,
             int crewCnt) {
@@ -26,7 +29,6 @@ public class Launch {
         this.name = name;
         this.rocket = rocket;
         this.date = date;
-        this.success = success;
         this.logo = logo;
         this.description = description;
         this.crewCnt = crewCnt;

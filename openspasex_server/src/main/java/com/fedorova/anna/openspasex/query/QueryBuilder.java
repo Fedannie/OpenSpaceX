@@ -4,9 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.Instant;
 import java.util.Arrays;
 
 public class QueryBuilder {
@@ -18,9 +16,15 @@ public class QueryBuilder {
     private String sortBy;
     private String[] populates;
     private boolean pagination = true;
+    private boolean upcoming = false;
 
-    public QueryBuilder addFromDate(LocalDate date) {
-        fromDate = date.toString();
+    public QueryBuilder addUpcoming() {
+        upcoming = true;
+        return this;
+    }
+
+    public QueryBuilder addFromDate(Instant date) {
+        fromDate = date.toString();//format(DateTimeFormatter.ISO_DATE_TIME);
         return this;
     }
 
@@ -29,8 +33,8 @@ public class QueryBuilder {
         return this;
     }
 
-    public QueryBuilder addToDate(LocalDateTime date) {
-        toDate = date.format(DateTimeFormatter.ISO_DATE_TIME);
+    public QueryBuilder addToDate(Instant date) {
+        toDate = date.toString();//date.format(DateTimeFormatter.ISO_DATE_TIME);
         return this;
     }
 
@@ -64,14 +68,16 @@ public class QueryBuilder {
 
         boolean hasFromDate = (fromDate != null && !fromDate.isEmpty());
         boolean hasToDate = (toDate != null && !toDate.isEmpty());
+
+        JsonObject innerQuery = new JsonObject();
         if (hasFromDate || hasToDate) {
-            JsonObject innerQuery = new JsonObject();
             JsonObject date = new JsonObject();
             if (hasFromDate) date.addProperty("$gte", fromDate);
             if (hasToDate) date.addProperty("$lte", toDate);
             innerQuery.add("date_utc", date);
-            query.add("query", innerQuery);
         }
+        innerQuery.addProperty("upcoming", upcoming);
+        query.add("query", innerQuery);
 
         JsonObject options = new JsonObject();
         options.addProperty("pagination", pagination);

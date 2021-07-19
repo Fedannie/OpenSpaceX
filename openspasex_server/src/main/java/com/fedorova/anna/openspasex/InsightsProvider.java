@@ -4,11 +4,16 @@ import com.fedorova.anna.openspasex.model.Launch;
 import com.fedorova.anna.openspasex.model.Rocket;
 import com.fedorova.anna.openspasex.query.QueryBuilder;
 import com.fedorova.anna.openspasex.utils.JsonUtils;
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.*;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 public class InsightsProvider {
@@ -17,9 +22,9 @@ public class InsightsProvider {
 
     public Launch getNextLaunch() {
         JsonObject query = new QueryBuilder()
-                .addFromDate(LocalDate.now())
                 .addLimit(1)
-                .addSortBy("date_unix")
+                .addUpcoming()
+                .addSortBy("flight_number")
                 .addPagination(true)
                 .addPopulates("rocket")
                 .build();
@@ -101,9 +106,7 @@ public class InsightsProvider {
                 .stream(response)
                 .map(launch -> {
                     ArrayList<String> ids = new ArrayList<>();
-                     try {
-                         launch.getAsJsonArray("crew").forEach(id -> ids.add(id.getAsString()));
-                     } catch (ClassCastException exception) {} //todo remove after spacex api fix
+                     launch.getAsJsonArray("crew").forEach(id -> ids.add(id.getAsString()));
                     return ids.toArray();
                 })
                 .flatMap(Stream::of)
@@ -121,7 +124,7 @@ public class InsightsProvider {
         if (year != null) {
             LocalDateTime localDate = LocalDateTime.now();
             if (localDate.getYear() <= year) {
-                queryBuilder.addToDate(localDate);
+                queryBuilder.addToDate(localDate.toInstant(ZoneOffset.UTC));
             } else {
                 queryBuilder.addToDate(year + 1);
             }
