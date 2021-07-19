@@ -1,20 +1,22 @@
 select {
-    margin-left: 10px;
+    margin-left: 1%;
     padding: 5px;
 }
 
 #fact_list {
-    margin-left: 25px;
+    margin-left: 2%;
     display: none;
 }
 
 #statistics {
-    position: relative;
-    left: 50px;
-    max-width: 40%;
+    position: absolute;
+    height: 35%;
+    left: 8%;
+    width: 38%;
     display: inline-block;
-    padding: 25px;
+    padding: 1% 1% 0 2%;
     border-radius: 25px;
+    background: #bde0eb;
 }
 
 .image {
@@ -28,12 +30,12 @@ select {
 #loader {
     position: absolute;
     z-index: 1;
-    top: 150px;
-    left: 150px;
+    top: 50%;
+    left: 50%;
     width: 120px;
     height: 120px;
     margin: -76px 0 0 -76px;
-    border: 20px solid #e3e3e3;
+    border: 20px solid #fff;
     border-radius: 50%;
     border-top: 20px solid #3699df;
     -webkit-animation: spin 2s linear infinite;
@@ -51,31 +53,38 @@ select {
 }
 
 hr.solid {
-    border-top: 3px solid #bbb;
+    border-top: 1px solid #aeaeae;
 }
 
 #rockets {
-    max-width: 90%;
-    left: 50px;
-    padding: 25px;
+    position: absolute;
+    width: 81%;
+    left: 8%;
+    margin-top: 2%;
+    padding: 2% 2% 2% 2%;
     display: none;
+    border-radius: 25px;
+    top: 50%;
+    background: #bde0eb;
 }
 
 #next_launch {
-    max-width: 50%;
+    width: 40%;
     position: absolute;
     left: 50%;
     border-radius: 25px;
-    padding: 25px;
+    padding: 1% 1% 0 2%;
     display: none;
+    height: 35%;
+    background: #bde0eb;
 }
 
 .description {
-    margin-left: 20px;
+    margin-left: 2%;
     display: inline-block;
 }
 
 .spacex_logo {
-    margin-left: 25px;
+    margin-left: 2%;
     height: 60px;
 }

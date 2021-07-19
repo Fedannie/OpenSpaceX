@@ -87,19 +87,57 @@ function reload() {
     getTakeoffWeight(year);
 }
 
+function addRocket(rocket) {
+    const divider = document.createElement("hr");
+    divider.className = "solid";
+    document.getElementById("rockets").appendChild(divider);
+
+    const line = document.createElement("div");
+    line.className = "rocket";
+
+    let image = new Image();
+    image.src = rocket.image;
+    image.style.margin = "1% 1% 0% 0%";
+    image.style.width = "20%";
+    image.style.display = "block-inline";
+
+    line.appendChild(image);
+
+    const summary = document.createElement("div");
+    summary.className = "description";
+    summary.style.position = "absolute";
+    summary.style.left = "23%";
+
+
+    const name = document.createElement("h3");
+    name.innerText = rocket.name;
+    summary.appendChild(name);
+
+    const cost = document.createElement("p");
+    cost.innerText = "Cost per launch: " + currencyFormatter.format(String(rocket.cost_per_launch));
+    summary.appendChild(cost);
+
+    const description = document.createElement("p");
+    description.innerText = rocket.description;
+    summary.appendChild(description);
+
+    line.appendChild(summary);
+
+    document.getElementById("rockets").appendChild(line);
+}
+
 function loadRockets() {
     getRequest("http://localhost:8080/rockets", response => {
-        /*JSON.parse(response, function(k, v) {
-            console.log(k);
-            return v;
-        });
-        document.getElementById("rockets").style.display = "block";*/
+        const rockets = JSON.parse(response);
+
+        for (let rocket of rockets) addRocket(rocket);
+
+        document.getElementById("rockets").style.display = "block";
     });
 }
 
 function loadNextLaunch() {
     getRequest("http://localhost:8080/next_launch", response => {
-        console.log("response = " + response);
         const launch = JSON.parse(response);
         document.getElementById("name").innerText = launch.name;
         document.getElementById("rocket").innerText = "Rocket: " + launch.rocket.name;
@@ -110,7 +148,6 @@ function loadNextLaunch() {
         document.getElementById("launch_logo").width = 100;
         document.getElementById("launch_logo").height = 100;
         document.getElementById("next_launch").style.display = "inline";
-        document.getElementById("next_launch").style.background = "#bde0eb"
     });
 }
 
@@ -123,7 +160,6 @@ function onLoaded() {
 function toggleLoading(on) {
     document.getElementById("loader").style.display = on ? "inline-block" : "none";
     document.getElementById("fact_list").style.display = on ? "none" : "block";
-    document.getElementById("statistics").style.background = on ? "#ffffff" : "#bde0eb"
 }
 
 function onPageLoad() {
