@@ -15,20 +15,18 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 public class InsightsProvider {
-    private final static String URL = "https://api.spacexdata.com";
-    private final static String OLD_VERSION = "/v4";
-    private final static String NEW_VERSION = "/v5";
+    private final static String URL = "https://api.spacexdata.com/v4";
     private final RestTemplate restTemplate = new RestTemplate();
 
     public Launch getNextLaunch() {
         JsonObject query = new QueryBuilder()
                 .addLimit(1)
                 .addUpcoming()
-                .addSortBy("flight_number")
+                .addSortBy("flight_number", true)
                 .addPagination(true)
                 .addPopulates("rocket")
                 .build();
-        Query body = restTemplate.postForObject(URL + NEW_VERSION + "/launches/query", query, Query.class);
+        Query body = restTemplate.postForObject(URL + "/launches/query", query, Query.class);
         if (body == null) return null;
         return Launch.decode(body.docs[0]);
     }
@@ -72,7 +70,7 @@ public class InsightsProvider {
     }
 
     public Rocket[] getAllRockets() {
-        JsonObject[] response = restTemplate.getForObject(URL + OLD_VERSION + "/rockets", JsonObject[].class);
+        JsonObject[] response = restTemplate.getForObject(URL + "/rockets", JsonObject[].class);
         if (response == null) return null;
         return Arrays
                 .stream(response)
@@ -121,7 +119,7 @@ public class InsightsProvider {
 
     private JsonObject[] getAllLaunches(Integer year, String... populates) {
         if (year == null && populates.length == 0) {
-            return restTemplate.getForObject(URL + NEW_VERSION + "/launches/past", JsonObject[].class);
+            return restTemplate.getForObject(URL + "/launches/past", JsonObject[].class);
         }
 
         JsonObject query = new QueryBuilder()
@@ -130,7 +128,7 @@ public class InsightsProvider {
                 .addPopulates(populates)
                 .build();
 
-        Query body = restTemplate.postForObject(URL + NEW_VERSION + "/launches/query", query, Query.class);
+        Query body = restTemplate.postForObject(URL + "/launches/query", query, Query.class);
         if (body == null) return null;
         return body.docs;
     }

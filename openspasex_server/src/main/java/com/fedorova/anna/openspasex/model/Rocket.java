@@ -25,16 +25,6 @@ public class Rocket {
         this.image = image;
     }
 
-    public static Rocket decode(JsonObject jsonObject) {
-        if (jsonObject == null) return null;
-        Rocket rocket = new Gson().fromJson(jsonObject, Rocket.class);
-        JsonElement flickrImages = jsonObject.get("flickr_images");
-        if (flickrImages != null && !flickrImages.isJsonNull() && flickrImages.getAsJsonArray().size() > 0) {
-            rocket.setImage(flickrImages.getAsJsonArray().get(0).getAsString());
-        }
-        return rocket;
-    }
-
     public String getId() {
         return id;
     }
@@ -53,5 +43,15 @@ public class Rocket {
 
     public long getCostPerLaunch() {
         return costPerLaunch;
+    }
+
+    public static Rocket decode(JsonObject jsonObject) {
+        if (jsonObject == null) return null;
+        Rocket rocket = new Gson().fromJson(jsonObject, Rocket.class);
+        JsonElement flickrImages = jsonObject.get("flickr_images");
+        if (flickrImages != null && !flickrImages.isJsonNull() && flickrImages.getAsJsonArray().size() > 0) {
+            rocket.setImage(flickrImages.getAsJsonArray().get(0).getAsString());
+        }
+        return rocket;
     }
 }

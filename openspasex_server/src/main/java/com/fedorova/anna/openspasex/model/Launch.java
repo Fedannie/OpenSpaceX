@@ -47,23 +47,6 @@ public class Launch {
         this.crewCnt = crewCnt;
     }
 
-    public static Launch decode(JsonObject jsonObject) {
-        if (jsonObject == null) return null;
-
-        Launch launch = new Gson().fromJson(jsonObject, Launch.class);
-        launch.setRocket(Rocket.decode(jsonObject.getAsJsonObject("rocket")));
-
-        JsonPrimitive image = JsonUtils.getNestedPrimitive(jsonObject, "links", "patch", "large");
-        if (image != null) {
-            launch.setLogo(image.getAsString());
-        }
-
-        JsonArray crew = jsonObject.getAsJsonArray("crew");
-        if (crew != null) launch.setCrewCnt(crew.size());
-
-        return launch;
-    }
-
     public String getId() {
         return id;
     }
@@ -90,5 +73,22 @@ public class Launch {
 
     public int getCrewCnt() {
         return crewCnt;
+    }
+
+    public static Launch decode(JsonObject jsonObject) {
+        if (jsonObject == null) return null;
+
+        Launch launch = new Gson().fromJson(jsonObject, Launch.class);
+        launch.setRocket(Rocket.decode(jsonObject.getAsJsonObject("rocket")));
+
+        JsonPrimitive image = JsonUtils.getNestedPrimitive(jsonObject, "links", "patch", "large");
+        if (image != null) {
+            launch.setLogo(image.getAsString());
+        }
+
+        JsonArray crew = jsonObject.getAsJsonArray("crew");
+        if (crew != null) launch.setCrewCnt(crew.size());
+
+        return launch;
     }
 }

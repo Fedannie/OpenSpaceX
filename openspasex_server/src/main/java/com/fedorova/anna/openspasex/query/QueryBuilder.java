@@ -15,6 +15,7 @@ public class QueryBuilder {
     private String toDate;
     private int limit = -1;
     private String sortBy;
+    private boolean ascending = true;
     private String[] populates;
     private boolean pagination = true;
     private boolean upcoming = false;
@@ -41,8 +42,9 @@ public class QueryBuilder {
         return this;
     }
 
-    public QueryBuilder addSortBy(String sortBy) {
+    public QueryBuilder addSortBy(String sortBy, boolean ascending) {
         this.sortBy = sortBy;
+        this.ascending = ascending;
         return this;
     }
 
@@ -87,7 +89,7 @@ public class QueryBuilder {
 
         if (sortBy != null && !sortBy.isEmpty()) {
             JsonObject sorting = new JsonObject();
-            sorting.addProperty(sortBy, "asc");
+            sorting.addProperty(sortBy, this.ascending ? "asc" : "desc");
             options.add("sort", sorting);
         }
 
