@@ -11,9 +11,9 @@ public class Rocket {
     private String image;
     private final String description;
     @SerializedName(value = "cost_per_launch")
-    private final int costPerLaunch;
+    private final long costPerLaunch;
 
-    public Rocket(String id, String name, String image, String description, int costPerLaunch) {
+    public Rocket(String id, String name, String image, String description, long costPerLaunch) {
         this.id = id;
         this.name = name;
         this.image = image;
@@ -51,7 +51,7 @@ public class Rocket {
         return description;
     }
 
-    public int getCostPerLaunch() {
+    public long getCostPerLaunch() {
         return costPerLaunch;
     }
 }
