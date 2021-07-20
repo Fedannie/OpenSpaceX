@@ -1,5 +1,7 @@
+
 # OpenSpaceX
 One-page Web application with provided Rest API that reveals insights about SpaceX flights.
+This application is based on the [SpaceX REST API](https://github.com/r-spacex/SpaceX-API).
 
 ## Setup and Launch
 To launch the application locally you need to open the openspacex-server folder in the terminal, and run:
