@@ -29,7 +29,7 @@ public class Rocket {
         if (jsonObject == null) return null;
         Rocket rocket = new Gson().fromJson(jsonObject, Rocket.class);
         JsonElement flickrImages = jsonObject.get("flickr_images");
-        if (flickrImages != null && flickrImages.getAsJsonArray().size() > 0) {
+        if (flickrImages != null && !flickrImages.isJsonNull() && flickrImages.getAsJsonArray().size() > 0) {
             rocket.setImage(flickrImages.getAsJsonArray().get(0).getAsString());
         }
         return rocket;

@@ -15,6 +15,7 @@ public class Launch {
     private final String date;
     private String logo;
     private final String description;
+    @SerializedName(value = "crew_cnt")
     private int crewCnt;
 
     public Launch(

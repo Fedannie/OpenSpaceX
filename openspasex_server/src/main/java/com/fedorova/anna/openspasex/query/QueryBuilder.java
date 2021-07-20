@@ -4,7 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 
 public class QueryBuilder {
@@ -23,18 +24,15 @@ public class QueryBuilder {
         return this;
     }
 
-    public QueryBuilder addFromDate(int year) {
-        fromDate = year + DATE_SUFFIX;
-        return this;
-    }
+    public QueryBuilder addDates(Integer year) {
+        if (year != null) {
+            fromDate = year + DATE_SUFFIX;
 
-    public QueryBuilder addToDate(Instant date) {
-        toDate = date.toString();
-        return this;
-    }
-
-    public QueryBuilder addToDate(int year) {
-        toDate = year + DATE_SUFFIX;
+            LocalDateTime localDate = LocalDateTime.now();
+            toDate = (localDate.getYear() <= year) ?
+                    localDate.toInstant(ZoneOffset.UTC).toString() :
+                    (year + 1) + DATE_SUFFIX;
+        }
         return this;
     }
 
