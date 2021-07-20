@@ -129,9 +129,7 @@ function addRocket(rocket) {
 function loadRockets() {
     getRequest("http://localhost:8080/rockets", response => {
         const rockets = JSON.parse(response);
-
         for (let rocket of rockets) addRocket(rocket);
-
         document.getElementById("rockets").style.display = "block";
     });
 }

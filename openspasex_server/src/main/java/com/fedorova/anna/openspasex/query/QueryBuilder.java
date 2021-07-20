@@ -23,18 +23,13 @@ public class QueryBuilder {
         return this;
     }
 
-    public QueryBuilder addFromDate(Instant date) {
-        fromDate = date.toString();//format(DateTimeFormatter.ISO_DATE_TIME);
-        return this;
-    }
-
     public QueryBuilder addFromDate(int year) {
         fromDate = year + DATE_SUFFIX;
         return this;
     }
 
     public QueryBuilder addToDate(Instant date) {
-        toDate = date.toString();//date.format(DateTimeFormatter.ISO_DATE_TIME);
+        toDate = date.toString();
         return this;
     }
 
