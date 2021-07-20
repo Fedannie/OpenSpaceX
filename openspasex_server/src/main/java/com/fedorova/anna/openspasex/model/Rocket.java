@@ -34,4 +34,24 @@ public class Rocket {
         }
         return rocket;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getCostPerLaunch() {
+        return costPerLaunch;
+    }
 }

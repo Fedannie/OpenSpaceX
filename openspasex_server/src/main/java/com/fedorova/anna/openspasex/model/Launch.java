@@ -63,4 +63,32 @@ public class Launch {
 
         return launch;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Rocket getRocket() {
+        return rocket;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getCrewCnt() {
+        return crewCnt;
+    }
 }
