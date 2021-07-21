@@ -3,6 +3,8 @@
 One-page Web application with provided Rest API that reveals insights about SpaceX flights.
 This application is based on the [SpaceX REST API](https://github.com/r-spacex/SpaceX-API).
 
+*Remark:* SpaceX REST API is changing rapidly last days, so inconsistencies may occur due to the fact that this application relies on the version of the API as of 21 July 2021. 
+
 ## Setup and Launch
 To launch the application locally you need to open the openspacex-server folder in the terminal, and run:
 `mvn spring-boot:run`
