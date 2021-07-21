@@ -6,12 +6,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
 public class Rocket {
-    private final String id;
-    private final String name;
+    private String id;
+    private String name;
     private String image;
-    private final String description;
+    private String description;
     @SerializedName(value = "cost_per_launch")
-    private final long costPerLaunch;
+    private long costPerLaunch;
 
     public Rocket(String id, String name, String image, String description, long costPerLaunch) {
         this.id = id;

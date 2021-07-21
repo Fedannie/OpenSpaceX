@@ -105,10 +105,7 @@ public class InsightsProvider {
                 .map(launch -> {
                     ArrayList<String> ids = new ArrayList<>();
                      launch.getAsJsonArray("crew").forEach(crewMember ->
-                             ids.add(crewMember
-                                     .getAsJsonObject()
-                                     .getAsJsonPrimitive("crew")
-                                     .getAsString())
+                             ids.add(crewMember.getAsString())
                      );
                     return ids.toArray();
                 })

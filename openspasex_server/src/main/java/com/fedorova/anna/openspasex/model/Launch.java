@@ -8,15 +8,17 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.annotations.SerializedName;
 
 public class Launch {
-    private final String id;
-    private final String name;
+    private String id;
+    private String name;
     private Rocket rocket;
     @SerializedName(value = "date_utc")
-    private final String date;
+    private String date;
     private String logo;
-    private final String description;
+    private String description;
     @SerializedName(value = "crew_cnt")
     private int crewCnt;
+
+    public Launch() {}
 
     public Launch(
             String id,
